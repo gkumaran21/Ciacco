@@ -1,21 +1,23 @@
 <title>Scoop Queue Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: one phone-width column for the customer, a wider lane board for the counter and owner. */
+/* Layout: one phone-width column for the customer, a wider lane board for the counter and owner.
+   Palette: brand blue, cream pills, orange highlight. */
 :root {
-  --bg: #F3F6F1;
+  --bg: #FFF8EF;
   --surface: #FFFFFF;
-  --surface-2: #EAF0E7;
-  --ink: #1C2620;
-  --muted: #5B685F;
-  --line: #D7E0D4;
-  --accent: #2E7A4C;
+  --surface-2: #FCEBD8;
+  --ink: #12324A;
+  --muted: #5B6B78;
+  --line: #EFDCC6;
+  --accent: #1673B0;
   --accent-ink: #FFFFFF;
-  --accent-soft: #DFEFE4;
-  --berry: #A82D55;
-  --berry-soft: #F7E1E9;
+  --accent-soft: #DCEEF9;
+  --berry: #C9561F;
+  --berry-soft: #FDE4D4;
   --warn: #9A6412;
   --warn-soft: #FBEFD9;
   --crit: #B3261E;
@@ -23,26 +25,30 @@
   --chat-bg: #EFEAE2;
   --bubble: #FFFFFF;
   --bubble-ink: #111B21;
-  --shadow: 0 1px 2px rgba(20, 40, 28, .06), 0 6px 20px rgba(20, 40, 28, .08);
-  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --brand: #1F8BCB;
+  --brand-ink: #FFF4E6;
+  --shadow: 0 1px 2px rgba(18, 50, 74, .06), 0 6px 20px rgba(18, 50, 74, .09);
+  --display: "Rubik", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
   --radius: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111613; --surface: #1A211C; --surface-2: #222B25; --ink: #E6EEE8; --muted: #9AA89E;
-    --line: #2D3830; --accent: #6BC48D; --accent-ink: #0D1A12; --accent-soft: #1E3326;
-    --berry: #E27BA0; --berry-soft: #3A1F2A; --warn: #E4AE55; --warn-soft: #3A2D16;
+    --bg: #0D1C28; --surface: #142838; --surface-2: #1B3246; --ink: #F4EBDD; --muted: #A7B6C2;
+    --line: #24415A; --accent: #5AB4EA; --accent-ink: #0B1A26; --accent-soft: #173A55;
+    --berry: #F59A6B; --berry-soft: #3D2618; --warn: #E4AE55; --warn-soft: #3A2D16;
     --crit: #F07A6E; --crit-soft: #3D1E1B; --chat-bg: #0B141A; --bubble: #202C33; --bubble-ink: #E9EDEF;
+    --brand: #17699B; --brand-ink: #FFF4E6;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111613; --surface: #1A211C; --surface-2: #222B25; --ink: #E6EEE8; --muted: #9AA89E;
-  --line: #2D3830; --accent: #6BC48D; --accent-ink: #0D1A12; --accent-soft: #1E3326;
-  --berry: #E27BA0; --berry-soft: #3A1F2A; --warn: #E4AE55; --warn-soft: #3A2D16;
+  --bg: #0D1C28; --surface: #142838; --surface-2: #1B3246; --ink: #F4EBDD; --muted: #A7B6C2;
+  --line: #24415A; --accent: #5AB4EA; --accent-ink: #0B1A26; --accent-soft: #173A55;
+  --berry: #F59A6B; --berry-soft: #3D2618; --warn: #E4AE55; --warn-soft: #3A2D16;
   --crit: #F07A6E; --crit-soft: #3D1E1B; --chat-bg: #0B141A; --bubble: #202C33; --bubble-ink: #E9EDEF;
+  --brand: #17699B; --brand-ink: #FFF4E6;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
   color-scheme: dark;
 }
@@ -340,6 +346,20 @@ select { font: inherit; color: var(--ink); background: var(--surface); width: 10
 .stuck-list .meta { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
 .stuck-list .live { color: var(--berry); font-weight: 700; }
 
+
+/* Theme overrides: blue bar, cream pills, orange highlight */
+.topbar { background: var(--brand); border-bottom: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.demo-pill { background: var(--brand-ink); color: #C9561F; }
+.seg { background: rgba(255, 244, 230, .18); }
+.seg button { color: var(--brand-ink); border-radius: 99px; }
+.seg button[aria-pressed="true"] { background: var(--brand-ink); color: #12324A; box-shadow: none; }
+.reset { color: var(--brand-ink); }
+.brand { color: var(--brand); }
+.btn, .size, .flav, .upi { border-radius: 16px; }
+.btn.primary, .btn.big { border-radius: 99px; }
+.sheet-head .avatar { background: var(--brand); color: var(--brand-ink); }
+.wa-icon { background: #25A35A; color: #FFFFFF; }
+
 @media (prefers-reduced-motion: reduce) {
   .notif.show { animation: none; }
   .spinner { animation-duration: 3s; }
@@ -372,7 +392,7 @@ select { font: inherit; color: var(--ink); background: var(--surface); width: 10
 <div class="sheet-backdrop" id="sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="WhatsApp chat with the gelateria">
     <div class="sheet-head">
-      <span class="avatar" aria-hidden="true">P</span>
+      <span class="avatar" aria-hidden="true">G</span>
       <div><div class="t" id="sheet-title"></div><div class="s">Business account</div></div>
       <button type="button" class="close" data-action="close-chat">Close</button>
     </div>
@@ -384,7 +404,7 @@ select { font: inherit; color: var(--ink); background: var(--surface); width: 10
 <script>
 (function () {
   // ---- Brand config: change these to show a different shop ----
-  const BRAND = { name: 'Pistacchio & Co.', outlet: 'Besant Nagar, Chennai', tables: 12 };
+  const BRAND = { name: 'Your Gelateria', outlet: 'Chennai', tables: 12 };
 
   const PRODUCTS = [
     { id: 'piccolo', name: 'Piccolo cup', scoops: 1, price: 190 },
@@ -454,7 +474,7 @@ select { font: inherit; color: var(--ink); background: var(--surface); width: 10
     };
   }
 
-  const KEY = 'scoop-queue-demo-v2';
+  const KEY = 'scoop-queue-demo-v3';
   let state;
   try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
   if (!state || state.v !== 2 || !Array.isArray(state.orders)) state = fresh();
