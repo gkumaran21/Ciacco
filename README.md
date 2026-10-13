@@ -19,3 +19,7 @@ To replay the lost-item story: order two items, serve only the first at the coun
 The strip under the tabs tells the presenter what to tap next. **Start over** resets everything.
 
 To show a different shop, edit `BRAND`, `PRODUCTS` and `FLAVOURS` at the top of the script.
+
+## Ciacco concept version
+
+`demo/ciacco/index.html` is the same demo in Ciacco's name, colours and wordmark style, made to pitch to Ciacco's owner. It is labelled on screen as a concept, not an official Ciacco product, and asks search engines not to index it. It is a complete HTML page: open it directly in a phone browser, or host it on an unlisted link. Don't publish it anywhere public without Ciacco's permission.

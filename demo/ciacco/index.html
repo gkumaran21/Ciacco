@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Ciacco Order Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Yellowtail&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column for the customer, a wider lane board for the counter and owner. */
+/* Layout: one phone-width column for the customer, a wider lane board for the counter and owner.
+   Palette after Ciacco's site: brand blue, cream pills, orange highlight. */
+:root {
+  --bg: #FFF8EF;
+  --surface: #FFFFFF;
+  --surface-2: #FCEBD8;
+  --ink: #12324A;
+  --muted: #5B6B78;
+  --line: #EFDCC6;
+  --accent: #1673B0;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCEEF9;
+  --berry: #C9561F;
+  --berry-soft: #FDE4D4;
+  --warn: #9A6412;
+  --warn-soft: #FBEFD9;
+  --crit: #B3261E;
+  --crit-soft: #FBE3E1;
+  --chat-bg: #EFEAE2;
+  --bubble: #FFFFFF;
+  --bubble-ink: #111B21;
+  --brand: #1F8BCB;
+  --brand-ink: #FFF4E6;
+  --shadow: 0 1px 2px rgba(18, 50, 74, .06), 0 6px 20px rgba(18, 50, 74, .09);
+  --display: "Rubik", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --script: "Yellowtail", "Brush Script MT", cursive;
+  --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1C28; --surface: #142838; --surface-2: #1B3246; --ink: #F4EBDD; --muted: #A7B6C2;
+    --line: #24415A; --accent: #5AB4EA; --accent-ink: #0B1A26; --accent-soft: #173A55;
+    --berry: #F59A6B; --berry-soft: #3D2618; --warn: #E4AE55; --warn-soft: #3A2D16;
+    --crit: #F07A6E; --crit-soft: #3D1E1B; --chat-bg: #0B141A; --bubble: #202C33; --bubble-ink: #E9EDEF;
+    --brand: #17699B; --brand-ink: #FFF4E6;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1C28; --surface: #142838; --surface-2: #1B3246; --ink: #F4EBDD; --muted: #A7B6C2;
+  --line: #24415A; --accent: #5AB4EA; --accent-ink: #0B1A26; --accent-soft: #173A55;
+  --berry: #F59A6B; --berry-soft: #3D2618; --warn: #E4AE55; --warn-soft: #3A2D16;
+  --crit: #F07A6E; --crit-soft: #3D1E1B; --chat-bg: #0B141A; --bubble: #202C33; --bubble-ink: #E9EDEF;
+  --brand: #17699B; --brand-ink: #FFF4E6;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-inline: 16px; padding-block: 0 120px;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .45; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Top bar */
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  margin-inline: -16px; padding: 10px 16px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.demo-pill {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--berry); background: var(--berry-soft); padding: 3px 8px; border-radius: 99px;
+}
+.seg { display: flex; flex: 1 1 260px; background: var(--surface-2); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button {
+  flex: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 9px;
+  font-weight: 600; font-size: 14px; color: var(--muted);
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.reset { border: 0; background: none; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 6px 2px; }
+
+.hint {
+  max-width: 1100px; margin: 12px auto 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  font-size: 14px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line);
+  border-radius: 12px; padding: 10px 12px;
+}
+.hint b { color: var(--ink); }
+.hint .btn { padding: 6px 12px; font-size: 13px; }
+
+main { margin: 18px auto 0; max-width: 480px; }
+main.wide { max-width: 1100px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 12px;
+  padding: 11px 16px; font-weight: 600; font-size: 15px;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.big { width: 100%; padding: 15px 18px; font-size: 17px; }
+.btn.ghost { background: transparent; }
+.btn.wa { width: 100%; background: var(--accent-soft); border-color: transparent; color: var(--ink); }
+.link { border: 0; background: none; padding: 4px 0; color: var(--accent); font-weight: 600; font-size: 15px; }
+.link.danger { color: var(--crit); font-size: 13px; }
+.badge {
+  min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--berry); color: var(--surface);
+  font-size: 12px; font-weight: 700; display: inline-grid; place-items: center;
+}
+
+/* Customer screens */
+.screen { display: grid; gap: 16px; }
+.screen-head { display: grid; gap: 4px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.welcome { padding-top: 12px; gap: 18px; }
+.brand { font-size: clamp(38px, 11vw, 52px); font-weight: 800; letter-spacing: -.02em; color: var(--accent); }
+.lede { font-size: 18px; max-width: 34ch; }
+.queue-note {
+  display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 500;
+  background: var(--warn-soft); color: var(--ink); padding: 10px 12px; border-radius: 12px;
+}
+.queue-note .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--warn); flex: none; }
+.fine { font-size: 13px; color: var(--muted); }
+.scoops-art { display: flex; gap: 6px; margin-top: 4px; }
+.scoops-art span { width: 44px; height: 44px; border-radius: 50% 50% 46% 46%; border: 1px solid var(--line); }
+
+.sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.size {
+  text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: var(--radius);
+  padding: 12px; display: grid; gap: 2px;
+}
+.size[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.size-name { font-weight: 700; font-size: 16px; }
+.size-meta { font-size: 13px; color: var(--muted); }
+.price { font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; }
+.sub { font-size: 19px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.count { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.flavours { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.flav {
+  text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px;
+  padding: 10px; display: grid; grid-template-columns: 26px 1fr; column-gap: 9px; align-items: center;
+}
+.flav[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); grid-row: span 2; }
+.flav-name { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.flav-note { font-size: 12px; color: var(--muted); }
+.msg { font-size: 13px; color: var(--crit); min-height: 1em; }
+
+.cartbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 15;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.cartbar-inner { max-width: 480px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+.lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.lines li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-top: 1px solid var(--line); }
+.lines li:first-child { border-top: 0; }
+.lines li > div { min-width: 0; display: grid; }
+.line-right { text-align: right; justify-items: end; font-variant-numeric: tabular-nums; font-weight: 600; }
+.total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; padding-inline: 4px; }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 14px; font-weight: 600; }
+input[type="text"], input[type="tel"], textarea {
+  font: inherit; color: var(--ink); background: var(--surface); width: 100%;
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px;
+}
+.phone { display: flex; align-items: stretch; }
+.phone span { display: grid; place-items: center; padding: 0 12px; border: 1.5px solid var(--line); border-right: 0; border-radius: 12px 0 0 12px; background: var(--surface-2); font-weight: 600; }
+.phone input { border-radius: 0 12px 12px 0; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); }
+
+.upi-list { display: grid; gap: 8px; }
+.upi {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  border: 1.5px solid var(--line); background: var(--surface); border-radius: var(--radius); padding: 14px;
+  font-weight: 600;
+}
+.upi .mark { width: 34px; height: 34px; border-radius: 10px; background: var(--surface-2); display: grid; place-items: center; font-weight: 800; font-size: 13px; color: var(--muted); }
+.upi .chev { margin-left: auto; color: var(--muted); }
+.demo-note { font-size: 13px; color: var(--muted); background: var(--surface-2); border-radius: 12px; padding: 10px 12px; }
+
+.paying { min-height: 50vh; display: grid; place-items: center; text-align: center; gap: 14px; align-content: center; }
+.spinner { width: 46px; height: 46px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.token-screen { text-align: center; justify-items: center; }
+.token {
+  font-family: var(--display); font-weight: 800; font-size: 96px; line-height: 1; letter-spacing: -.03em;
+  color: var(--berry); background: var(--berry-soft); border-radius: 28px; padding: 18px 34px 22px;
+  font-variant-numeric: tabular-nums;
+}
+.token.is-ready { color: var(--accent-ink); background: var(--accent); }
+.stepper { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; }
+.stepper li { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.stepper li::before { content: ""; height: 6px; border-radius: 99px; background: var(--line); }
+.stepper li.done::before { background: var(--accent); }
+.stepper li.done { color: var(--ink); }
+.status-line { font-size: 18px; font-weight: 600; max-width: 30ch; }
+.summary { width: 100%; text-align: left; }
+
+/* Counter */
+.counter { display: grid; gap: 16px; }
+.counter-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.counter-head h2 { font-size: 28px; }
+.counter-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.counter-stats span { background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 5px 12px; font-size: 14px; color: var(--muted); }
+.counter-stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.lanes { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+.lane { display: grid; gap: 10px; }
+.lane h3 { font-size: 17px; display: flex; gap: 8px; align-items: center; }
+.lane h3 .n { font-family: var(--body); font-size: 13px; background: var(--surface-2); border-radius: 99px; padding: 1px 9px; color: var(--muted); }
+.empty { font-size: 14px; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); padding: 16px; text-align: center; }
+.ticket {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px;
+  display: grid; gap: 8px;
+}
+.ticket.mine { border: 2px solid var(--berry); box-shadow: var(--shadow); }
+.ticket header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tok { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.src { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--surface-2); color: var(--muted); }
+.src.qr { background: var(--accent-soft); color: var(--ink); }
+.mine-tag { font-size: 12px; font-weight: 700; color: var(--berry); }
+.age { margin-left: auto; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 99px; color: var(--muted); }
+.age.warn { background: var(--warn-soft); color: var(--warn); }
+.age.crit { background: var(--crit-soft); color: var(--crit); }
+.who { font-weight: 600; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; }
+.items b { font-weight: 700; }
+.ticket .btn { width: 100%; }
+
+/* Owner */
+.owner { display: grid; gap: 18px; }
+.owner-head { display: grid; gap: 6px; }
+.owner-head h2 { font-size: 28px; }
+.sample-note { font-size: 13px; color: var(--muted); }
+.kpis { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: grid; gap: 2px; }
+.kpi .label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.kpi .value { font-family: var(--display); font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.kpi .delta { font-size: 13px; color: var(--muted); }
+.kpi .delta.good { color: var(--accent); font-weight: 600; }
+.panels { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.panel h3 { font-size: 18px; }
+.panel .cap { font-size: 13px; color: var(--muted); }
+
+.hours { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; height: 150px; align-items: end; position: relative; border-bottom: 1px solid var(--line); }
+.bar { position: relative; height: 100%; display: flex; align-items: flex-end; border-radius: 4px; }
+.bar .fill { width: 100%; background: var(--accent); border-radius: 4px 4px 0 0; opacity: .55; }
+.bar.peak .fill { opacity: 1; }
+.bar .tip {
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--bg); font-size: 12px; white-space: nowrap; padding: 4px 8px; border-radius: 6px;
+  pointer-events: none; opacity: 0; transition: opacity .12s;
+}
+.bar:hover .tip, .bar:focus-visible .tip { opacity: 1; }
+.bar.edge-l .tip { left: 0; transform: none; }
+.bar.edge-r .tip { left: auto; right: 0; transform: none; }
+.panel { overflow-x: clip; }
+.bar .peak-label { position: absolute; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.hour-labels { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; font-size: 11px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+
+.flav-bars { display: grid; gap: 8px; }
+.fb { display: grid; grid-template-columns: minmax(0, 9.5em) 1fr 2.5em; gap: 10px; align-items: center; font-size: 14px; }
+.fb .track { height: 10px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.fb .track span { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.fb .v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.fb .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.campaign textarea { min-height: 96px; resize: vertical; }
+.camp-meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.confirm { background: var(--warn-soft); border-radius: 12px; padding: 12px; display: grid; gap: 10px; font-size: 14px; }
+.confirm .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.sent { background: var(--accent-soft); border-radius: 12px; padding: 12px; font-size: 14px; }
+
+/* WhatsApp notification + chat */
+.notif {
+  position: fixed; z-index: 40; left: 50%; top: calc(10px + env(safe-area-inset-top, 0px));
+  width: min(440px, calc(100% - 24px)); transform: translate(-50%, 0);
+  display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: start; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
+}
+.notif.show { animation: drop .35s ease-out; }
+@keyframes drop { from { transform: translate(-50%, -120%); } to { transform: translate(-50%, 0); } }
+.wa-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+.notif .app { font-size: 12px; color: var(--muted); }
+.notif .n-title { font-weight: 700; font-size: 14px; }
+.notif .n-text { font-size: 14px; }
+
+.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet {
+  width: min(480px, 100%); max-height: 88%; display: grid; grid-template-rows: auto 1fr auto;
+  background: var(--chat-bg); border-radius: 20px 20px 0 0; overflow: hidden;
+}
+.sheet-head { display: flex; gap: 10px; align-items: center; padding: 12px 14px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.sheet-head .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-weight: 800; }
+.sheet-head .t { font-weight: 700; line-height: 1.2; }
+.sheet-head .s { font-size: 12px; color: var(--muted); }
+.sheet-head .close { margin-left: auto; border: 0; background: var(--surface-2); border-radius: 99px; padding: 6px 12px; font-weight: 600; font-size: 14px; }
+.chat { overflow-y: auto; padding: 16px 14px; display: grid; gap: 10px; align-content: start; }
+.bubble { background: var(--bubble); color: var(--bubble-ink); border-radius: 4px 14px 14px 14px; padding: 9px 12px 6px; max-width: 86%; white-space: pre-line; font-size: 15px; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+.bubble time { display: block; text-align: right; font-size: 11px; opacity: .6; margin-top: 2px; }
+.chat .empty { background: var(--bubble); color: var(--bubble-ink); }
+.sheet-foot { padding: 10px 14px calc(12px + env(safe-area-inset-bottom, 0px)); font-size: 12px; color: var(--muted); background: var(--surface); border-top: 1px solid var(--line); text-align: center; }
+
+/* Item-level tracking */
+select { font: inherit; color: var(--ink); background: var(--surface); width: 100%; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; }
+.item-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; width: 100%; text-align: left; }
+.item-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
+.ticket .item-row { background: var(--surface-2); border-color: transparent; padding: 8px 10px; }
+.item-row .what { min-width: 0; display: grid; }
+.item-row .what span { color: var(--muted); font-size: 13px; }
+.item-row.served .what b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.ticket .item-row.served { background: transparent; border: 1px dashed var(--line); }
+.item-row.flagged, .ticket .item-row.flagged { background: var(--crit-soft); border-color: var(--crit); }
+.item-row .full { grid-column: 1 / -1; justify-self: start; }
+.flag { font-size: 13px; font-weight: 700; color: var(--crit); }
+.chip { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+.chip.ok { background: var(--accent-soft); color: var(--accent); }
+.chip.wait { background: var(--warn-soft); color: var(--warn); }
+.btn.sm { padding: 6px 12px; font-size: 13px; border-radius: 10px; }
+.btn.alert { background: var(--crit-soft); border-color: var(--crit); color: var(--crit); }
+.ticket.flagged { border: 2px solid var(--crit); box-shadow: var(--shadow); }
+.table-tag { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--ink); color: var(--bg); }
+.progress { font-size: 13px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.plate-note { font-size: 14px; font-weight: 600; background: var(--warn-soft); border-radius: 10px; padding: 8px 10px; }
+.alerts { display: grid; gap: 8px; }
+.alert-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--crit-soft); border: 2px solid var(--crit); border-radius: var(--radius); padding: 10px 12px; }
+.alert-row .what { display: grid; min-width: 0; }
+.stuck-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.stuck-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.stuck-list li:first-child { border-top: 0; padding-top: 0; }
+.stuck-list .mins { font-weight: 700; color: var(--crit); font-variant-numeric: tabular-nums; }
+.stuck-list .meta { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
+.stuck-list .live { color: var(--berry); font-weight: 700; }
+
+
+/* Ciacco theme overrides */
+.topbar { background: var(--brand); border-bottom: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.topbar .wordmark { font-family: var(--script); font-size: 30px; line-height: 1; color: var(--brand-ink); padding-inline: 2px 6px; border-bottom: 3px solid var(--brand-ink); }
+.demo-pill { background: var(--brand-ink); color: #C9561F; }
+.seg { background: rgba(255, 244, 230, .18); }
+.seg button { color: var(--brand-ink); border-radius: 99px; }
+.seg button[aria-pressed="true"] { background: var(--brand-ink); color: #12324A; box-shadow: none; }
+.reset { color: var(--brand-ink); }
+.concept { max-width: 1100px; margin: 8px auto 0; font-size: 12px; color: var(--muted); }
+.brand { font-family: var(--script); font-weight: 400; font-size: clamp(64px, 20vw, 88px); letter-spacing: 0; color: var(--brand); line-height: .95; justify-self: start; padding-inline: 4px 10px; border-bottom: 5px solid var(--brand); }
+.btn, .size, .flav, .upi { border-radius: 16px; }
+.btn.primary, .btn.big { border-radius: 99px; }
+.lane h3, .counter-head h2, .owner-head h2, .screen-head h2 { letter-spacing: -.01em; }
+.sheet-head .avatar { font-family: var(--script); font-weight: 400; font-size: 22px; background: var(--brand); color: var(--brand-ink); }
+.wa-icon { background: #25A35A; color: #FFFFFF; }
+
+@media (prefers-reduced-motion: reduce) {
+  .notif.show { animation: none; }
+  .spinner { animation-duration: 3s; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="wordmark" aria-label="Ciacco">Ciacco</span><span class="demo-pill">Concept</span>
+    <div class="seg" role="group" aria-label="Which screen to show">
+      <button type="button" data-action="view" data-view="customer" aria-pressed="true">Customer</button>
+      <button type="button" data-action="view" data-view="counter" aria-pressed="false">Counter</button>
+      <button type="button" data-action="view" data-view="owner" aria-pressed="false">Owner</button>
+    </div>
+    <button type="button" class="reset" data-action="reset">Start over</button>
+  </div>
+</div>
+<p class="concept">Concept demo prepared for Ciacco Gelateria. Not an official Ciacco product.</p>
+<div class="hint" id="hint" aria-live="polite"></div>
+<main id="main"></main>
+
+<button type="button" class="notif" id="notif" data-action="chat" hidden>
+  <span class="wa-icon" aria-hidden="true">WA</span>
+  <span>
+    <span class="app">WhatsApp · now</span><br>
+    <span class="n-title" id="notif-title"></span><br>
+    <span class="n-text" id="notif-text"></span>
+  </span>
+</button>
+
+<div class="sheet-backdrop" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="WhatsApp chat with the gelateria">
+    <div class="sheet-head">
+      <span class="avatar" aria-hidden="true">C</span>
+      <div><div class="t" id="sheet-title"></div><div class="s">Business account</div></div>
+      <button type="button" class="close" data-action="close-chat">Close</button>
+    </div>
+    <div class="chat" id="chat"></div>
+    <div class="sheet-foot">What the customer sees in their own WhatsApp. No app to install.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- Brand config: change these to show a different shop ----
+  const BRAND = { name: 'Ciacco', outlet: 'Chennai', tables: 12 };
+
+  const PRODUCTS = [
+    { id: 'piccolo', name: 'Piccolo cup', scoops: 1, price: 190 },
+    { id: 'medio', name: 'Medio cup', scoops: 2, price: 320 },
+    { id: 'grande', name: 'Grande cup', scoops: 3, price: 440 },
+    { id: 'cone', name: 'Waffle cone', scoops: 2, price: 350 },
+  ];
+  const FLAVOURS = [
+    { id: 'pistachio', name: 'Sicilian Pistachio', note: 'Contains nuts', sw: '#93B96A' },
+    { id: 'hazelnut', name: 'Piedmont Hazelnut', note: 'Contains nuts', sw: '#A87B4F' },
+    { id: 'coffee', name: 'Filter Coffee', note: 'Kumbakonam style', sw: '#6E4528' },
+    { id: 'chocolate', name: 'Dark Chocolate 70%', note: 'Belgian cocoa', sw: '#3E241B' },
+    { id: 'mango', name: 'Alphonso Mango', note: 'Sorbet · vegan', sw: '#F2AE3A' },
+    { id: 'sitaphal', name: 'Sitaphal', note: 'Seasonal', sw: '#E9E1CB' },
+    { id: 'coconut', name: 'Tender Coconut', note: 'Sorbet · vegan', sw: '#F4F1E8' },
+    { id: 'caramel', name: 'Salted Caramel', note: 'House favourite', sw: '#C48A3F' },
+    { id: 'strawberry', name: 'Strawberry Sorbet', note: 'Sorbet · vegan', sw: '#DD5868' },
+  ];
+  const UPI_APPS = [['GP', 'Google Pay'], ['Pe', 'PhonePe'], ['Pt', 'Paytm'], ['UPI', 'Any other UPI app']];
+  const NAMES = ['Divya', 'Rahul', 'Lakshmi', 'Vikram', 'Ayesha', 'Naveen', 'Keerthana', 'Rohan', 'Fathima', 'Siddharth', 'Anu', 'Hari'];
+  const WARN = 5 * 60e3, LATE = 8 * 60e3;
+
+  // Sample numbers for the owner screen (clearly labelled as samples in the UI)
+  const SAMPLE = {
+    orders: 214, revenue: 71480, contacts: 96, listSize: 1284,
+    waitBefore: '~9 min', waitAfter: '4m 10s', delayed: 6, followUps: 9,
+    hours: [6, 9, 11, 8, 7, 10, 14, 22, 31, 38, 29, 19],
+    flavours: { pistachio: 64, hazelnut: 51, coffee: 43, chocolate: 39, mango: 31, caramel: 27, sitaphal: 22, coconut: 18, strawberry: 15 },
+    stuck: [
+      { what: 'Waffle cone', token: 188, table: 9, mins: 14, meta: 'Customer asked twice · 8:41 pm' },
+      { what: 'Waffle cone', token: 203, table: 3, mins: 11, meta: 'Customer asked · 9:12 pm' },
+      { what: 'Grande cup', token: 176, table: 6, mins: 9, meta: 'Flagged by timer · 8:20 pm' },
+    ],
+  };
+
+  const prod = id => PRODUCTS.find(p => p.id === id);
+  const flav = id => FLAVOURS.find(f => f.id === id);
+  const rupees = n => '₹' + n.toLocaleString('en-IN');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const clock = t => new Date(t).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+  const iName = i => prod(i.productId).name;
+  const iFlav = i => i.flavours.map(f => flav(f).name).join(', ');
+  const pending = o => o.items.filter(i => !i.served);
+  const flaggedItems = o => o.items.filter(i => !i.served && i.nudgedAt);
+  const servedCount = o => o.items.filter(i => i.served).length;
+
+  function item(p, f, servedAt) {
+    return { productId: p, flavours: f, price: prod(p).price, served: !!servedAt, servedAt: servedAt || null, nudgedAt: null, nudges: 0 };
+  }
+  function seed(token, name, table, source, status, createdAt, items, doneAt) {
+    return { id: 'o' + token, token, name, table, items, total: items.reduce((s, i) => s + i.price, 0), source, status, createdAt, doneAt: doneAt || null, mine: false, seed: true };
+  }
+  function fresh() {
+    const now = Date.now();
+    return {
+      v: 2, view: 'customer', step: 'welcome', cart: [], build: { productId: null, flavours: [] },
+      customer: { name: 'Priya', phone: '98400 12210', optIn: true, table: '4' },
+      orders: [
+        seed(37, 'Arjun', 2, 'Counter', 'served', now - 9 * 60e3, [item('medio', ['pistachio', 'hazelnut'], now - 3 * 60e3)], now - 3 * 60e3),
+        seed(38, 'Meena', 7, 'QR', 'preparing', now - 5 * 60e3 - 20e3, [item('grande', ['mango', 'coconut', 'sitaphal'])]),
+        seed(39, 'Karthik', 5, 'QR', 'preparing', now - 6 * 60e3 - 30e3, [item('piccolo', ['strawberry'], now - 4 * 60e3), item('cone', ['chocolate', 'caramel'])]),
+        seed(40, 'Sana', 1, 'Counter', 'new', now - 50e3, [item('piccolo', ['coffee'])]),
+      ],
+      myOrderId: null, nextToken: 41, chat: [], unread: 0,
+      campMsg: 'New this weekend: Sitaphal gelato is back for the season. Show this message at the counter for a free extra scoop. Valid till Sunday.',
+      campaign: null,
+    };
+  }
+
+  const KEY = 'ciacco-concept-demo-v2';
+  let state;
+  try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
+  if (!state || state.v !== 2 || !Array.isArray(state.orders)) state = fresh();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable: demo still works */ } }
+
+  const $main = document.getElementById('main');
+  const $hint = document.getElementById('hint');
+  const $notif = document.getElementById('notif');
+  const $sheet = document.getElementById('sheet');
+  const myOrder = () => state.orders.find(o => o.id === state.myOrderId);
+  const cartTotal = () => state.cart.reduce((s, i) => s + i.price, 0);
+  const viewBtn = (v, label, primary) => `<button class="btn ${primary ? 'primary' : ''}" data-action="view" data-view="${v}">${label}</button>`;
+
+  // ---------- Hint strip (tells the presenter what to tap next) ----------
+  function hintHTML() {
+    const o = myOrder();
+    const served = o ? servedCount(o) : 0;
+    const flagged = o ? flaggedItems(o) : [];
+    const stuck = o ? pending(o)[0] : null;
+    if (state.view === 'customer') {
+      if (state.step === 'welcome') return '<span><b>Step 1.</b> The customer has tasted a flavour and scanned the QR. Order <b>two items</b> to replay the lost-item story.</span>';
+      if (state.step === 'token' && o) {
+        if (o.status === 'new' || (o.status === 'preparing' && served === 0)) return `<span><b>Step 3.</b> Paid. Now open the counter and serve <b>only the first item</b>.</span>${viewBtn('counter', 'Open Counter', true)}`;
+        if (o.status === 'preparing' && !flagged.length) return `<span><b>Step 4.</b> One item arrived, the ${esc(iName(stuck))} is stuck. Tap <b>Still waiting for this?</b></span>`;
+        if (o.status === 'preparing') return `<span><b>Step 5.</b> One tap, no walking to the counter. See what staff see now.</span>${viewBtn('counter', 'Open Counter', true)}`;
+        if (o.status === 'served') return `<span><b>Step 6.</b> Everything served. The counter is told to collect the plate.</span>${viewBtn('counter', 'Open Counter', true)}`;
+        return `<span>Order closed. Next, what the owner learns from it.</span>${viewBtn('owner', 'Open Owner', true)}`;
+      }
+      if (state.step === 'menu' || state.step === 'cart') {
+        if (state.cart.length < 2) return '<span><b>Step 2.</b> Add <b>two items</b>, for example a Medio cup and a Waffle cone.</span>';
+        return '<span><b>Step 2.</b> Two items in the order. Review and pay by UPI.</span>';
+      }
+      return '<span><b>Step 2.</b> Pay by UPI.</span>';
+    }
+    if (state.view === 'counter') {
+      if (o && o.status === 'new') return `<span><b>Step 3.</b> Order <b>#${o.token}</b> arrived with no paper bill. Tap <b>Start making</b>.</span>`;
+      if (o && o.status === 'preparing' && served === 0) return `<span>Tap <b>Served</b> on just the <b>first item</b> of #${o.token}. Leave the second one.</span>`;
+      if (o && o.status === 'preparing' && !flagged.length) return `<span><b>Step 4.</b> 1 of ${o.items.length} served, and the screen knows it. Now pretend the ${esc(iName(stuck))} gets stuck.</span>${viewBtn('customer', "See customer's phone", true)}`;
+      if (o && o.status === 'preparing') return `<span><b>Step 5.</b> The stuck ${esc(iName(flagged[0]))} is now a red alert at the top, with the table number. Any staff member can act on it. Tap <b>Served</b>.</span>`;
+      if (o && o.status === 'served') return `<span><b>Step 6.</b> All items out, so the screen tells staff to collect plate #${o.token} from Table ${esc(o.table)}. Tap <b>Plate collected</b>.</span>`;
+      if (o && o.status === 'closed') return `<span>Order closed. No plate left on a table looking unserved.</span>${viewBtn('owner', 'Open Owner', true)}`;
+      return '<span>Each item is tracked on its own, so staff always know what is still missing and for which table.</span>';
+    }
+    return '<span>The owner sees which items get stuck and how often customers chase them, so the bottleneck gets fixed.</span>';
+  }
+
+  // ---------- Customer ----------
+  function customerHTML() {
+    const s = state.step;
+    if (s === 'welcome') {
+      return `<section class="screen welcome">
+        <p class="eyebrow">Tasting counter QR · ${esc(BRAND.outlet)}</p>
+        <h1 class="brand">${esc(BRAND.name)}</h1>
+        <div class="scoops-art" aria-hidden="true">${['pistachio', 'mango', 'chocolate', 'strawberry', 'sitaphal'].map(f => `<span style="background:${flav(f).sw}"></span>`).join('')}</div>
+        <p class="lede">Found a flavour you love? Order and pay here, take a seat, and follow every item on your phone.</p>
+        <div class="queue-note"><span class="dot"></span><span>8 people are waiting at the cash counter right now</span></div>
+        <button class="btn primary big" data-action="go" data-step="menu">Start my order</button>
+        <p class="fine">No app to download. Pay with any UPI app.</p>
+      </section>`;
+    }
+    if (s === 'menu') {
+      const b = state.build, p = b.productId && prod(b.productId);
+      let html = `<section class="screen">
+        <div class="screen-head"><button class="link" data-action="go" data-step="welcome">← Back</button><h2>${state.cart.length ? 'Add another item' : 'Choose your cup'}</h2></div>
+        <div class="sizes" role="radiogroup" aria-label="Cup size">
+          ${PRODUCTS.map(x => `<button class="size" role="radio" aria-checked="${b.productId === x.id}" data-action="size" data-id="${x.id}">
+            <span class="size-name">${x.name}</span><span class="size-meta">${x.scoops} scoop${x.scoops > 1 ? 's' : ''}</span><span class="price">${rupees(x.price)}</span></button>`).join('')}
+        </div>`;
+      if (p) {
+        html += `<h3 class="sub">Pick ${p.scoops} flavour${p.scoops > 1 ? 's' : ''} <span class="count">${b.flavours.length} of ${p.scoops}</span></h3>
+        <div class="flavours">${FLAVOURS.map(f => `<button class="flav" aria-pressed="${b.flavours.includes(f.id)}" data-action="flav" data-id="${f.id}">
+          <span class="swatch" style="background:${f.sw}"></span><span class="flav-name">${f.name}</span><span class="flav-note">${f.note}</span></button>`).join('')}</div>
+        <p class="msg" id="flav-msg"></p>
+        <button class="btn primary big" data-action="add" ${b.flavours.length === p.scoops ? '' : 'disabled'}>Add to order · ${rupees(p.price)}</button>`;
+      }
+      html += '</section>';
+      if (state.cart.length) {
+        html += `<div class="cartbar"><div class="cartbar-inner"><div><b>${state.cart.length} item${state.cart.length > 1 ? 's' : ''}</b> · <span class="num">${rupees(cartTotal())}</span></div>
+          <button class="btn primary" data-action="go" data-step="cart">Review and pay</button></div></div>`;
+      }
+      return html;
+    }
+    if (s === 'cart') {
+      const c = state.customer, empty = !state.cart.length;
+      const tables = Array.from({ length: BRAND.tables }, (_, i) => String(i + 1));
+      return `<section class="screen">
+        <div class="screen-head"><button class="link" data-action="go" data-step="menu">← Add more</button><h2>Your order</h2></div>
+        ${empty ? '<p class="empty">Your order is empty.</p>' : `<ul class="lines">${state.cart.map((i, idx) => `<li>
+          <div><b>${iName(i)}</b><span class="muted">${i.flavours.map(f => flav(f).name).join(' · ')}</span></div>
+          <div class="line-right"><span>${rupees(i.price)}</span><button class="link danger" data-action="remove" data-idx="${idx}">Remove</button></div></li>`).join('')}</ul>`}
+        <div class="total-row"><span>Total</span><span class="num">${rupees(cartTotal())}</span></div>
+        <p class="fine">Prices include taxes.</p>
+        <div class="field"><label for="cust-table">Where are you sitting?</label><select id="cust-table">${tables.map(t => `<option value="${t}" ${c.table === t ? 'selected' : ''}>Table ${t}</option>`).join('')}</select></div>
+        <div class="field"><label for="cust-name">Your name</label><input type="text" id="cust-name" value="${esc(c.name)}" autocomplete="off"></div>
+        <div class="field"><label for="cust-phone">WhatsApp number</label><div class="phone"><span>+91</span><input type="tel" id="cust-phone" inputmode="tel" value="${esc(c.phone)}" autocomplete="off"></div></div>
+        <label class="check"><input type="checkbox" id="cust-optin" ${c.optIn ? 'checked' : ''}><span>Send me new flavours and offers on WhatsApp</span></label>
+        <button class="btn primary big" data-action="go" data-step="pay" ${empty ? 'disabled' : ''}>Pay ${rupees(cartTotal())} with UPI</button>
+      </section>`;
+    }
+    if (s === 'pay') {
+      return `<section class="screen">
+        <div class="screen-head"><button class="link" data-action="go" data-step="cart">← Back</button><h2>Pay ${rupees(cartTotal())}</h2>
+        <p class="muted">To ${esc(BRAND.name)}, ${esc(BRAND.outlet)}</p></div>
+        <div class="upi-list">${UPI_APPS.map(([m, n]) => `<button class="upi" data-action="pay" data-app="${n}"><span class="mark">${m}</span>${n}<span class="chev">›</span></button>`).join('')}</div>
+        <p class="demo-note">Demo only, no money moves. In the live version this opens the customer's UPI app, and the payment goes straight to the shop's own bank account.</p>
+      </section>`;
+    }
+    if (s === 'paying') {
+      return `<section class="screen paying"><div class="spinner" aria-hidden="true"></div>
+        <h2>Waiting for ${esc(state.payingApp || 'UPI')}</h2><p class="muted">Approve the payment in your UPI app.</p></section>`;
+    }
+    // token
+    const o = myOrder();
+    if (!o) { state.step = 'welcome'; return customerHTML(); }
+    const n = o.items.length, done = servedCount(o);
+    const stage = { new: 0, preparing: 1, served: 2, closed: 2 }[o.status];
+    const ahead = state.orders.filter(x => (x.status === 'new' || x.status === 'preparing') && x.createdAt < o.createdAt).length;
+    const waiting = pending(o).map(iName).join(' and ');
+    const line = o.status === 'new' ? `Paid. ${ahead} order${ahead === 1 ? '' : 's'} ahead of you. Sit at Table ${esc(o.table)}, we'll bring it over.`
+      : o.status === 'preparing' ? (done ? `${done} of ${n} served. Your ${esc(waiting)} is still being made.` : 'Your order is being made.')
+      : `All ${n} item${n > 1 ? 's' : ''} served. Enjoy!`;
+    const rows = o.items.map((i, idx) => {
+      const right = i.served ? '<span class="chip ok">Served</span>' : `<span class="chip wait">${o.status === 'new' ? 'In queue' : 'Being made'}</span>`;
+      let extra = '';
+      if (!i.served && i.nudgedAt) extra = `<span class="flag full">Counter alerted <span data-since="${i.nudgedAt}">0s</span> ago. It's at the top of their screen.</span>`;
+      else if (!i.served && o.status !== 'new') extra = `<button class="btn sm alert full" data-action="nudge" data-oid="${o.id}" data-idx="${idx}">Still waiting for this?</button>`;
+      return `<li class="item-row ${i.served ? 'served' : ''} ${!i.served && i.nudgedAt ? 'flagged' : ''}"><div class="what"><b>${iName(i)}</b><span>${iFlav(i)}</span></div>${right}${extra}</li>`;
+    }).join('');
+    return `<section class="screen token-screen">
+      <p class="eyebrow">Your order · Table ${esc(o.table)}</p>
+      <div class="token ${stage === 2 ? 'is-ready' : ''}">#${o.token}</div>
+      <ol class="stepper">${['Paid', 'Being made', 'All served'].map((t, i) => `<li class="${i <= stage ? 'done' : ''}">${t}</li>`).join('')}</ol>
+      <p class="status-line">${line}</p>
+      <p class="progress">${done} of ${n} served · paid ${rupees(o.total)} by UPI</p>
+      <ul class="item-rows">${rows}</ul>
+      <button class="btn wa" data-action="chat">Open WhatsApp chat ${state.unread ? `<span class="badge">${state.unread}</span>` : ''}</button>
+      <button class="link" data-action="neworder">Order something else</button>
+    </section>`;
+  }
+
+  // ---------- Counter ----------
+  function ageText(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000)), m = Math.floor(t / 60), s = t % 60;
+    return m ? `${m}m ${String(s).padStart(2, '0')}s` : `${s}s`;
+  }
+  function ageClass(ms) { return ms >= LATE ? 'crit' : ms >= WARN ? 'warn' : ''; }
+
+  function ticketHTML(o) {
+    const n = o.items.length, done = servedCount(o), flagged = flaggedItems(o).length > 0;
+    const since = o.status === 'served' ? o.doneAt : o.createdAt;
+    const age = Date.now() - since;
+    const rows = o.items.map((i, idx) => {
+      let right = '';
+      if (i.served) right = '<span class="chip ok">Served</span>';
+      else if (o.status === 'preparing') right = `<button class="btn sm primary" data-action="serve" data-oid="${o.id}" data-idx="${idx}">Served</button>`;
+      const flag = !i.served && i.nudgedAt ? `<span class="flag full">Customer is asking${i.nudges > 1 ? ` (${i.nudges}×)` : ''} · <span data-since="${i.nudgedAt}">0s</span> ago</span>` : '';
+      return `<li class="item-row ${i.served ? 'served' : ''} ${flag ? 'flagged' : ''}"><div class="what"><b>${iName(i)}</b><span>${iFlav(i)}</span></div>${right}${flag}</li>`;
+    }).join('');
+    let foot = '';
+    if (o.status === 'new') foot = `<button class="btn" data-action="start" data-oid="${o.id}">Start making</button>`;
+    else if (o.status === 'served') foot = `<p class="plate-note">All ${n} served. Collect plate #${o.token} from Table ${esc(o.table)}.</p><button class="btn" data-action="close" data-oid="${o.id}">Plate collected</button>`;
+    return `<article class="ticket ${o.mine ? 'mine' : ''} ${flagged ? 'flagged' : ''}">
+      <header><span class="tok">#${o.token}</span><span class="table-tag">Table ${esc(o.table)}</span>
+        <span class="src ${o.source === 'QR' ? 'qr' : ''}">${o.source === 'QR' ? 'QR · paid' : 'Counter'}</span>
+        ${o.mine ? '<span class="mine-tag">Your demo order</span>' : ''}
+        <span class="age ${o.status === 'served' ? '' : ageClass(age)}" data-since="${since}" data-plain="${o.status === 'served'}" title="${o.status === 'served' ? 'Since last item was served' : 'Time since order'}">${ageText(age)}</span></header>
+      <div class="who">${esc(o.name)}${o.status === 'preparing' ? ` <span class="progress">· ${done} of ${n} served</span>` : ''}</div>
+      <ul class="item-rows">${rows}</ul>
+      ${foot}
+    </article>`;
+  }
+
+  function counterHTML() {
+    const by = st => state.orders.filter(o => o.status === st).sort((a, b) =>
+      (flaggedItems(b).length > 0) - (flaggedItems(a).length > 0) || a.createdAt - b.createdAt);
+    const lanes = [['new', 'New orders'], ['preparing', 'Being made'], ['served', 'Served · collect plate']];
+    const open = state.orders.filter(o => o.status === 'new' || o.status === 'preparing');
+    const itemsLeft = open.reduce((s, o) => s + pending(o).length, 0);
+    const asking = open.reduce((s, o) => s + flaggedItems(o).length, 0);
+    const late = open.filter(o => Date.now() - o.createdAt >= LATE).length;
+    const alerts = open.flatMap(o => o.items.map((i, idx) => ({ o, i, idx }))).filter(({ i }) => !i.served && i.nudgedAt).sort((a, b) => a.i.nudgedAt - b.i.nudgedAt);
+    return `<section class="counter">
+      <div class="counter-head"><div><p class="eyebrow">Counter screen · ${esc(BRAND.outlet)}</p><h2>Order queue</h2></div>
+        <button class="btn ghost" data-action="rush">Simulate a rush (+3 orders)</button></div>
+      <div class="counter-stats">
+        <span><b>${itemsLeft}</b> item${itemsLeft === 1 ? '' : 's'} still to serve</span>
+        <span><b>${asking}</b> customer${asking === 1 ? '' : 's'} asking</span>
+        <span><b>${late}</b> order${late === 1 ? '' : 's'} over 8 min</span>
+        <span><b>${by('closed').length}</b> closed</span>
+      </div>
+      ${alerts.length ? `<div class="alerts" role="alert">${alerts.map(({ o, i, idx }) => `<div class="alert-row">
+        <div class="what"><b>Table ${esc(o.table)} · #${o.token} · ${iName(i)}</b><span class="flag">Customer is asking${i.nudges > 1 ? ` (${i.nudges}×)` : ''} · <span data-since="${i.nudgedAt}">0s</span> ago</span></div>
+        <button class="btn sm primary" data-action="serve" data-oid="${o.id}" data-idx="${idx}">Served</button></div>`).join('')}</div>` : ''}
+      <div class="lanes">${lanes.map(([k, t]) => {
+        const list = by(k);
+        return `<section class="lane"><h3>${t} <span class="n">${list.length}</span></h3>
+          ${list.length ? list.map(ticketHTML).join('') : '<p class="empty">Nothing here.</p>'}</section>`;
+      }).join('')}</div>
+    </section>`;
+  }
+
+  // ---------- Owner ----------
+  function ownerHTML() {
+    const now = Date.now();
+    const live = state.orders.filter(o => !o.seed);
+    const liveRevenue = live.reduce((s, o) => s + o.total, 0);
+    const liveOptIns = live.filter(o => o.mine && o.optIn).length;
+    const timed = live.filter(o => o.doneAt);
+    const avgWait = timed.length ? timed.reduce((s, o) => s + (o.doneAt - o.createdAt), 0) / timed.length : 0;
+    const liveWait = avgWait >= 20e3 ? ageText(avgWait) : null;
+    const listSize = SAMPLE.listSize + liveOptIns;
+    const liveItems = live.flatMap(o => o.items.map(i => ({ o, i })));
+    const liveDelayed = liveItems.filter(({ o, i }) => ((i.servedAt || now) - o.createdAt) >= LATE).length;
+    const liveNudges = liveItems.reduce((s, { i }) => s + i.nudges, 0);
+    const liveStuck = liveItems.filter(({ i }) => i.nudges).map(({ o, i }) => ({
+      what: iName(i), token: o.token, table: o.table, mins: Math.max(1, Math.round(((i.servedAt || now) - o.createdAt) / 60e3)),
+      meta: `${i.nudges > 1 ? `Customer asked ${i.nudges}×` : 'Customer asked'} · ${i.served ? 'served after the alert' : 'still waiting'}`, live: true,
+    }));
+    const stuck = liveStuck.concat(SAMPLE.stuck);
+
+    const counts = Object.assign({}, SAMPLE.flavours);
+    liveItems.forEach(({ i }) => i.flavours.forEach(f => { counts[f] = (counts[f] || 0) + 1; }));
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const topMax = top[0][1];
+
+    const hrs = SAMPLE.hours, hMax = Math.max(...hrs), peakIdx = hrs.indexOf(hMax);
+    const hourName = i => { const h = 12 + i; const f = x => (x % 12 || 12) + (x >= 12 && x < 24 ? 'pm' : 'am'); return `${f(h)}–${f(h + 1)}`; };
+    const hourShort = i => String((12 + i) % 12 || 12);
+
+    const lo = Math.round(listSize * 0.8), hi = Math.round(listSize * 0.9);
+    let camp = '';
+    if (state.campaign === 'confirm') {
+      camp = `<div class="confirm"><span>Send this message to <b>${listSize.toLocaleString('en-IN')}</b> customers who opted in?</span>
+        <div class="row"><button class="btn primary" data-action="camp-send">Send now</button><button class="btn" data-action="camp-cancel">Cancel</button></div></div>`;
+    } else if (state.campaign === 'sent') {
+      camp = `<div class="sent"><b>Sent to ${listSize.toLocaleString('en-IN')} customers.</b> (Demo: nothing was actually sent.) Redemptions will show up here as people show the message at the counter.</div>`;
+    } else {
+      camp = `<button class="btn primary" data-action="camp-confirm">Send to ${listSize.toLocaleString('en-IN')} customers</button>`;
+    }
+
+    return `<section class="owner">
+      <div class="owner-head"><p class="eyebrow">Owner view · ${esc(BRAND.outlet)} · Today</p><h2>How the counter did today</h2>
+        <p class="sample-note">Sample numbers for the demo, plus the ${live.length} order${live.length === 1 ? '' : 's'} placed in this demo. A pilot measures the real ones.</p></div>
+      <div class="kpis">
+        <div class="kpi"><span class="label">Orders</span><span class="value">${(SAMPLE.orders + live.length).toLocaleString('en-IN')}</span><span class="delta">${rupees(SAMPLE.revenue + liveRevenue)} paid straight to your bank</span></div>
+        <div class="kpi"><span class="label">Avg time, pay to fully served</span><span class="value">${liveWait || SAMPLE.waitAfter}</span><span class="delta good">${SAMPLE.waitBefore} before, with paper bills</span></div>
+        <div class="kpi"><span class="label">Items over 8 min</span><span class="value">${SAMPLE.delayed + liveDelayed}</span><span class="delta">Most at the waffle station</span></div>
+        <div class="kpi"><span class="label">Customer follow-ups</span><span class="value">${SAMPLE.followUps + liveNudges}</span><span class="delta">One tap each, not a walk to the counter</span></div>
+      </div>
+      <div class="panels">
+        <div class="panel"><h3>Items that got stuck</h3><p class="cap">Every item a customer chased or the timer flagged. Waffle cones keep showing up here, so that station needs help at peak.</p>
+          <ul class="stuck-list">${stuck.map(x => `<li><span><b>${esc(x.what)}</b> · #${x.token} · Table ${esc(x.table)}</span><span class="mins">${x.mins} min</span>
+            <span class="meta">${x.live ? '<span class="live">From this demo</span> · ' : ''}${esc(x.meta)}</span></li>`).join('')}</ul>
+        </div>
+        <div class="panel"><h3>Orders by hour</h3><p class="cap">Peak is ${hourName(peakIdx)}. Plan staff around it.</p>
+          <div class="hours" role="img" aria-label="Orders per hour from 12pm to midnight, peaking at ${hMax} between ${hourName(peakIdx)}">
+            ${hrs.map((v, i) => `<div class="bar ${i === peakIdx ? 'peak' : ''} ${i < 2 ? 'edge-l' : i > 9 ? 'edge-r' : ''}" tabindex="0" aria-label="${hourName(i)}: ${v} orders">
+              <div class="fill" style="height:${(v / hMax) * 100}%"></div><span class="tip">${hourName(i)} · ${v} orders</span>
+              ${i === peakIdx ? `<span class="peak-label" style="bottom:calc(${(v / hMax) * 100}% + 4px)">${v}</span>` : ''}</div>`).join('')}
+          </div>
+          <div class="hour-labels" aria-hidden="true">${hrs.map((_, i) => `<span>${hourShort(i)}</span>`).join('')}</div>
+        </div>
+        <div class="panel"><h3>Top flavours today</h3><p class="cap">Scoops sold. Know what to make more of tomorrow.</p>
+          <div class="flav-bars">${top.map(([id, v]) => `<div class="fb"><span class="nm">${flav(id).name}</span><span class="track"><span style="width:${(v / topMax) * 100}%"></span></span><span class="v">${v}</span></div>`).join('')}</div>
+        </div>
+        <div class="panel campaign"><h3>Bring customers back</h3>
+          <p class="cap">${SAMPLE.contacts + liveOptIns} new WhatsApp contacts today. Message everyone who opted in at checkout.</p>
+          <label class="field" for="camp-msg"><span style="font-size:14px;font-weight:600">Message</span></label>
+          <textarea id="camp-msg">${esc(state.campMsg)}</textarea>
+          <div class="camp-meta"><span>${listSize.toLocaleString('en-IN')} customers</span><span>About ${rupees(lo)}–${rupees(hi)} in WhatsApp fees</span></div>
+          ${camp}
+        </div>
+      </div>
+    </section>`;
+  }
+
+  // ---------- WhatsApp ----------
+  function pushChat(text) {
+    state.chat.push({ text, at: Date.now() });
+    state.unread += 1;
+  }
+  let notifTimer;
+  function notify(title, text) {
+    document.getElementById('notif-title').textContent = title;
+    document.getElementById('notif-text').textContent = text;
+    $notif.hidden = false;
+    $notif.classList.remove('show'); void $notif.offsetWidth; $notif.classList.add('show');
+    clearTimeout(notifTimer);
+    notifTimer = setTimeout(() => { $notif.hidden = true; }, 7000);
+  }
+  function openChat() {
+    $notif.hidden = true;
+    state.unread = 0;
+    document.getElementById('sheet-title').textContent = BRAND.name;
+    document.getElementById('chat').innerHTML = state.chat.length
+      ? state.chat.map(m => `<div class="bubble">${esc(m.text)}<time>${clock(m.at)}</time></div>`).join('')
+      : '<p class="empty">No messages yet. Place an order first.</p>';
+    $sheet.hidden = false;
+    const chat = document.getElementById('chat'); chat.scrollTop = chat.scrollHeight;
+    render();
+  }
+
+  // ---------- Actions ----------
+  function placeOrder() {
+    const token = state.nextToken++;
+    const name = state.customer.name.trim() || 'Guest';
+    const items = state.cart.map(i => item(i.productId, i.flavours));
+    const o = { id: 'o' + token + '-' + Date.now(), token, name, table: state.customer.table, items, total: cartTotal(), source: 'QR', status: 'new', createdAt: Date.now(), doneAt: null, mine: true, seed: false, optIn: state.customer.optIn };
+    state.orders.push(o);
+    state.myOrderId = o.id;
+    state.cart = [];
+    state.build = { productId: null, flavours: [] };
+    state.step = 'token';
+    pushChat(`Hi ${name}, thanks for ordering at ${BRAND.name}!\n\nOrder #${token} · Table ${o.table}\n${items.map(i => `• ${iName(i)} (${iFlav(i)})`).join('\n')}\nPaid ${rupees(o.total)} by UPI.\n\nTrack each item on your order page. We'll bring everything to your table.`);
+  }
+
+  const findOrder = id => state.orders.find(x => x.id === id);
+
+  function serve(o, idx) {
+    const i = o.items[idx];
+    if (!i || i.served) return;
+    i.served = true; i.servedAt = Date.now();
+    const allDone = !pending(o).length;
+    if (o.mine && i.nudgedAt) {
+      const text = `Sorry for the wait! Your ${iName(i)} is on its way to Table ${o.table}.`;
+      pushChat(text); if (!allDone) notify(BRAND.name, text);
+    }
+    if (allDone) {
+      o.status = 'served'; o.doneAt = Date.now();
+      if (o.mine) {
+        const text = `All ${o.items.length} items of order #${o.token} are served. Enjoy!\n\nHow was everything? Reply with a number from 1 to 5. Show this chat on your next visit for 10% off.`;
+        pushChat(text); notify(BRAND.name, text);
+      }
+    }
+  }
+
+  function nudge(o, idx) {
+    const i = o.items[idx];
+    if (!i || i.served) return;
+    i.nudgedAt = Date.now(); i.nudges += 1;
+    pushChat(`Sorry, ${o.name}. We've alerted the counter team about your ${iName(i)}. It's now flagged at the top of their screen with your table number.`);
+  }
+
+  function rush() {
+    for (let k = 0; k < 3; k++) {
+      const n = 1 + Math.floor(Math.random() * 2);
+      const items = [];
+      for (let j = 0; j < n; j++) {
+        const p = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
+        const pool = FLAVOURS.map(f => f.id).sort(() => Math.random() - .5);
+        items.push(item(p.id, pool.slice(0, p.scoops)));
+      }
+      const token = state.nextToken++;
+      state.orders.push({
+        id: 'o' + token + '-' + Date.now(), token, name: NAMES[Math.floor(Math.random() * NAMES.length)],
+        table: String(1 + Math.floor(Math.random() * BRAND.tables)), items,
+        total: items.reduce((s, i) => s + i.price, 0), source: Math.random() < .65 ? 'QR' : 'Counter',
+        status: 'new', createdAt: Date.now() - Math.floor(Math.random() * 40e3), doneAt: null, mine: false, seed: false,
+      });
+    }
+  }
+
+  function act(action, el) {
+    switch (action) {
+      case 'view': state.view = el.dataset.view; window.scrollTo(0, 0); break;
+      case 'go': state.step = el.dataset.step; window.scrollTo(0, 0); break;
+      case 'size': {
+        const p = prod(el.dataset.id);
+        state.build = { productId: p.id, flavours: state.build.flavours.slice(0, p.scoops) };
+        break;
+      }
+      case 'flav': {
+        const b = state.build, p = prod(b.productId), id = el.dataset.id;
+        if (b.flavours.includes(id)) b.flavours = b.flavours.filter(f => f !== id);
+        else if (b.flavours.length < p.scoops) b.flavours.push(id);
+        else {
+          const m = document.getElementById('flav-msg');
+          if (m) m.textContent = `A ${p.name} holds ${p.scoops} flavour${p.scoops > 1 ? 's' : ''}. Remove one to swap.`;
+          return;
+        }
+        break;
+      }
+      case 'add': {
+        const p = prod(state.build.productId);
+        state.cart.push({ productId: p.id, flavours: state.build.flavours.slice(), price: p.price });
+        state.build = { productId: null, flavours: [] };
+        window.scrollTo(0, 0);
+        break;
+      }
+      case 'remove': state.cart.splice(Number(el.dataset.idx), 1); break;
+      case 'pay':
+        state.step = 'paying'; state.payingApp = el.dataset.app;
+        setTimeout(() => { if (state.step === 'paying') { placeOrder(); render(); } }, 1700);
+        break;
+      case 'neworder': state.step = 'menu'; window.scrollTo(0, 0); break;
+      case 'start': { const o = findOrder(el.dataset.oid); if (o && o.status === 'new') o.status = 'preparing'; break; }
+      case 'serve': { const o = findOrder(el.dataset.oid); if (o) serve(o, Number(el.dataset.idx)); break; }
+      case 'nudge': { const o = findOrder(el.dataset.oid); if (o) nudge(o, Number(el.dataset.idx)); break; }
+      case 'close': { const o = findOrder(el.dataset.oid); if (o) o.status = 'closed'; break; }
+      case 'rush': rush(); break;
+      case 'chat': openChat(); return;
+      case 'close-chat': $sheet.hidden = true; render(); return;
+      case 'camp-confirm': state.campaign = 'confirm'; break;
+      case 'camp-cancel': state.campaign = null; break;
+      case 'camp-send': state.campaign = 'sent'; break;
+      case 'reset': {
+        const view = state.view;
+        state = fresh(); state.view = view === 'owner' ? 'customer' : view;
+        $sheet.hidden = true; $notif.hidden = true; window.scrollTo(0, 0);
+        break;
+      }
+    }
+    render();
+  }
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-action]');
+    if (t && !t.disabled) act(t.dataset.action, t);
+    else if (e.target === $sheet) { $sheet.hidden = true; render(); }
+  });
+  document.addEventListener('input', e => {
+    if (e.target.id === 'cust-name') state.customer.name = e.target.value;
+    else if (e.target.id === 'cust-phone') state.customer.phone = e.target.value;
+    else if (e.target.id === 'camp-msg') state.campMsg = e.target.value;
+    else return;
+    save();
+  });
+  document.addEventListener('change', e => {
+    if (e.target.id === 'cust-optin') state.customer.optIn = e.target.checked;
+    else if (e.target.id === 'cust-table') state.customer.table = e.target.value;
+    else return;
+    save();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$sheet.hidden) { $sheet.hidden = true; render(); } });
+
+  function tick() {
+    const now = Date.now();
+    document.querySelectorAll('[data-since]').forEach(el => {
+      const age = now - Number(el.dataset.since);
+      el.textContent = ageText(age);
+      if (!el.classList.contains('age')) return;
+      el.classList.remove('warn', 'crit');
+      const c = el.dataset.plain === 'true' ? '' : ageClass(age);
+      if (c) el.classList.add(c);
+    });
+  }
+
+  function render() {
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === state.view)));
+    $hint.innerHTML = hintHTML();
+    $main.className = state.view === 'customer' ? '' : 'wide';
+    $main.innerHTML = state.view === 'customer' ? customerHTML() : state.view === 'counter' ? counterHTML() : ownerHTML();
+    save();
+  }
+
+  // A reload mid-payment lands back on the pay screen
+  if (state.step === 'paying') state.step = 'pay';
+  render();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
