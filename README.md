@@ -2,15 +2,19 @@
 
 QR ordering and pickup for counter-service dessert shops (gelato, waffles, cafés).
 
-Flow: taste at the counter → scan QR → order and pay by UPI → token on the phone → WhatsApp message when it's ready → shop gets a customer list to bring people back.
+Flow: taste at the counter → scan QR → order and pay by UPI → track **each item** on the phone → flag a stuck item with one tap → shop gets a customer list to bring people back.
+
+The core problem: a numbered plate tracks the whole order, but food is served item by item. When one of two items arrives, the plate still says "nothing served", so the missing item has no owner and the customer has to chase it.
 
 ## Demo
 
 `demo/index.html` is a self-contained, clickable pitch demo. It has no backend and moves no money. Use the three tabs at the top:
 
-1. **Customer:** scan landing page, cup and flavour picker, UPI payment (simulated), live token.
-2. **Counter:** order queue that replaces paper bills and numbered plates. Tapping **Mark ready** sends the customer's WhatsApp message (simulated).
-3. **Owner:** wait times, orders by hour, top flavours, and a WhatsApp campaign to opted-in customers. The numbers are labelled samples plus whatever you order in the demo.
+1. **Customer:** scan landing page, cup and flavour picker, table number, UPI payment (simulated), and an order page showing each item as served or being made, with a **Still waiting for this?** button on pending items.
+2. **Counter:** order queue that replaces paper bills. Each item has its own **Served** button. A customer's "still waiting" tap becomes a red alert at the top with the table number. When every item is out, the screen tells staff to collect the plate.
+3. **Owner:** time from payment to fully served, items over 8 minutes, customer follow-ups, a list of stuck items (showing the bottleneck station), orders by hour, top flavours, and a WhatsApp campaign to opted-in customers. The numbers are labelled samples plus whatever you order in the demo.
+
+To replay the lost-item story: order two items, serve only the first at the counter, tap **Still waiting for this?** on the customer screen, then serve it from the red alert.
 
 The strip under the tabs tells the presenter what to tap next. **Start over** resets everything.
 
